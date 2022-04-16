@@ -1,6 +1,7 @@
 #include<stdio.h>	            //to use the printf function
 #include<conio.h>         		//to use the getche function
 #include<stdlib.h>         		//to use the rand function
+#include<time.h>                //to use the time function
 
 #define GENE_COUNT 10
 #define POPULATION 100
@@ -10,6 +11,7 @@
 typedef struct Chrom{             		// creating the chrom structure
     short int bit[GENE_COUNT];
     int fit;
+    double prob;
 }chrom;
 
 void init_pop(chrom popcurrent[POPULATION]);    	//defining the functions that we will use
@@ -17,6 +19,7 @@ int fitness(chrom chrom);
 void select(chrom popcurrent[POPULATION]);
 void crossover(chrom popnext[POPULATION]);
 void mutation(chrom popnext[POPULATION]);
+void sort(chrom popcurrent[POPULATION]);
 
 int main(){
 
@@ -49,9 +52,15 @@ void init_pop(chrom popcurrent[POPULATION]){        //Read Initial population fr
         chrom_str[GENE_COUNT] = 0;
         popcurrent[i] = convert_str_2_chrom(chrom_str);
     }
+    long long int total_fitness = 0;
     for(int i=0;i<POPULATION;i++){
         popcurrent[i].fit = fitness(popcurrent[i]);
+        total_fitness += popcurrent[i].fit;
     }
+    for(int i=0;i<POPULATION;i++){
+        popcurrent[i].prob = (double)popcurrent[i].fit/total_fitness;
+    }
+
 }
 
 int fitness(chrom chrom){
@@ -63,4 +72,21 @@ int fitness(chrom chrom){
   }
   sum = sum%101;
   return(sum);                	//return the value of sum
+}
+
+void select(chrom popcurrent[POPULATION]){
+    sort(popcurrent);
+    chrom selected[POPULATION];
+    for(int j=0;j<POPULATION;j++){
+        srand((unsigned)time(NULL));
+        double random = rand()/RAND_MAX;
+        double comulative_prob = 0;
+        for(int i=0;i<POPULATION;i++){
+            comulative_prob += popcurrent[i].prob;
+            if(random<comulative_prob){
+                selected[j] = popcurrent[i];
+                break;
+            }
+        }
+    }
 }
