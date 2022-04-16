@@ -25,7 +25,7 @@ int main(){
 chrom convert_str_2_chrom(char* chrom_str){         //Accepts a string of 1s & 0s to the length of GENE_COUNT.
     chrom chromo;                                   //Will return the corresponding chromosome.
     for(int i=0;chrom_str[i];i++){
-        if(i>=GENE_COUNT || chrom_str[i]!='0' || chrom_str[i]!='1'){
+        if(i>=GENE_COUNT || (chrom_str[i]!='0' && chrom_str[i]!='1')){
             printf("Error!\nInvalid string as a chromosome.\n");
             exit(EXIT_FAILURE);
         }
@@ -46,6 +46,7 @@ void init_pop(chrom popcurrent[POPULATION]){        //Read Initial population fr
     for(int i=0;i<POPULATION;i++){
         char chrom_str[GENE_COUNT + 2];
         fscanf(population,"%s",chrom_str);
+        chrom_str[GENE_COUNT] = 0;
         popcurrent[i] = convert_str_2_chrom(chrom_str);
     }
     for(int i=0;i<POPULATION;i++){
