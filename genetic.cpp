@@ -17,6 +17,7 @@ int fitness(chrom chrom);
 void select(chrom popcurrent[POPULATION]);
 void crossover(chrom popnext[POPULATION]);
 void mutation(chrom popnext[POPULATION]);
+void sort(chrom popcurrent[POPULATION]);
 
 int main(){
 
@@ -63,4 +64,17 @@ int fitness(chrom chrom){
   }
   sum = sum%101;
   return(sum);                	//return the value of sum
+}
+
+void sort(chrom popcurrent[POPULATION]){
+  chrom temp;
+  for(int i=0 ; i<POPULATION ; i++){
+    for(int j=0; j<POPULATION ; j++){
+      if(popcurrent[j].fit>popcurrent[j+1].fit){
+        temp=popcurrent[j+1];
+        popcurrent[j+1]=popcurrent[j];
+        popcurrent[j]=temp;
+      }
+    }
+  }
 }
