@@ -25,7 +25,7 @@ int main(){
 chrom convert_str_2_chrom(char* chrom_str){         //Accepts a string of 1s & 0s to the length of GENE_COUNT.
     chrom chromo;                                   //Will return the corresponding chromosome.
     for(int i=0;chrom_str[i];i++){
-        if(i>=GENE_COUNT){
+        if(i>=GENE_COUNT || chrom_str[i]!='0' || chrom_str[i]!='1'){
             printf("Error!\nInvalid string as a chromosome.\n");
             exit(EXIT_FAILURE);
         }
