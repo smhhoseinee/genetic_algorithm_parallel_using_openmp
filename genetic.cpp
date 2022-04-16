@@ -9,7 +9,7 @@
 
 typedef struct Chrom{             		// creating the chrom structure
     short int bit[GENE_COUNT];
-      int fit;
+    int fit;
 }chrom;
 
 void init_pop(chrom popcurrent[POPULATION]);    	//defining the functions that we will use
@@ -51,4 +51,15 @@ void init_pop(chrom popcurrent[POPULATION]){        //Read Initial population fr
     for(int i=0;i<POPULATION;i++){
         popcurrent[i].fit = fitness(popcurrent[i]);
     }
+}
+
+int fitness(chrom chrom){
+  int bit_number = 0;
+  int sum = 0;
+  while(bit_number < GENE_COUNT){
+    sum += (chrom.bit[bit_number]*(2^bit_number));
+    bit_number++;
+  }
+  sum = sum%101;
+  return(sum);                	//return the value of sum
 }
