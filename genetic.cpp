@@ -16,7 +16,7 @@ typedef struct Chrom{             		// creating the chrom structure
 
 void init_pop(chrom popcurrent[POPULATION]);    	//defining the functions that we will use
 int fitness(chrom chrom);
-void select(chrom popcurrent[POPULATION]);
+void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]);
 void crossover(chrom popnext[POPULATION]);
 void mutation(chrom popnext[POPULATION]);
 void sort(chrom popcurrent[POPULATION]);
@@ -64,19 +64,18 @@ void init_pop(chrom popcurrent[POPULATION]){        //Read Initial population fr
 }
 
 int fitness(chrom chrom){
-  int bit_number = 0;
-  int sum = 0;
-  while(bit_number < GENE_COUNT){
-    sum += (chrom.bit[bit_number]*(2^bit_number));
-    bit_number++;
-  }
-  sum = sum%101;
-  return(sum);                	//return the value of sum
+    int bit_number = 0;
+    int sum = 0;
+    while(bit_number < GENE_COUNT){
+        sum += (chrom.bit[bit_number]*(2^bit_number));
+        bit_number++;
+    }
+    sum = sum%101;
+    return(sum);                	//return the value of sum
 }
 
-void select(chrom popcurrent[POPULATION]){
+void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]){      //perfom selection on the curr pop considering prob.
     sort(popcurrent);
-    chrom selected[POPULATION];
     for(int j=0;j<POPULATION;j++){
         srand((unsigned)time(NULL));
         double random = rand()/RAND_MAX;
@@ -86,6 +85,19 @@ void select(chrom popcurrent[POPULATION]){
             if(random<comulative_prob){
                 selected[j] = popcurrent[i];
                 break;
+            }
+        }
+    }
+}
+
+void sort(chrom popcurrent[POPULATION]){        //sort pop by their prob
+    chrom temp;
+    for(int i=0 ; i<POPULATION ; i++){
+        for(int j=0; j<POPULATION ; j++){
+            if(popcurrent[j].fit>popcurrent[j+1].fit){
+            temp=popcurrent[j+1];
+            popcurrent[j+1]=popcurrent[j];
+            popcurrent[j]=temp;
             }
         }
     }
