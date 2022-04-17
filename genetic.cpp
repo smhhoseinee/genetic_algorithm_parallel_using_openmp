@@ -76,8 +76,8 @@ int fitness(chrom chrom){
 
 void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]){      //perfom selection on the curr pop considering prob.
     sort(popcurrent);
+    srand((unsigned)time(NULL));
     for(int j=0;j<POPULATION;j++){
-        srand((unsigned)time(NULL));
         double random = rand()/RAND_MAX;
         double cumulative_prob = 0;
         for(int i=0;i<POPULATION;i++){
