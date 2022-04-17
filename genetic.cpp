@@ -79,10 +79,10 @@ void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]){      //pe
     for(int j=0;j<POPULATION;j++){
         srand((unsigned)time(NULL));
         double random = rand()/RAND_MAX;
-        double comulative_prob = 0;
+        double cumulative_prob = 0;
         for(int i=0;i<POPULATION;i++){
-            comulative_prob += popcurrent[i].prob;
-            if(random<comulative_prob){
+            cumulative_prob += popcurrent[i].prob;
+            if(random<cumulative_prob){
                 selected[j] = popcurrent[i];
                 break;
             }
@@ -102,3 +102,24 @@ void sort(chrom popcurrent[POPULATION]){        //sort pop by their prob
         }
     }
 }
+
+void crossover(chrom selected[POPULATION]){ // crossover function takes a pointer to array of chromes
+    int random;
+    random=rand();
+    chrom temp_child;
+    random=((random%(GENE_COUNT-1))+1); //random cross over for first child (child of first selected chrom and the last one)
+    for(int i=0;i<random;i++){
+        temp_child.bit[i] = selected[0].bit[i];
+    }
+    for(int i=random;i<GENE_COUNT-1;i++){
+        temp_child.bit[i] = selected[POPULATION-1].bit[i];
+    }
+    for(int chrom_counter = 0 ; chrom_counter<POPULATION ; chrom_counter++){
+        random=rand();
+        random=((random%(GENE_COUNT-1))+1);
+        for(int i=random;i<GENE_COUNT;i++){
+            selected[chrom_counter].bit[i] = selected[chrom_counter+1].bit[i];
+        }    
+    }
+    selected[POPULATION-1] = temp_child; //the last selected chrom now becomes the new child
+}                  
