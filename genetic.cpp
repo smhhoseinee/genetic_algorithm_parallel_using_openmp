@@ -7,6 +7,7 @@
 #define POPULATION 100
 #define ITER 100
 #define STATIC_POP_FILE "population.txt"
+#define MUTATION_FAC 5
 
 typedef struct Chrom{             		// creating the chrom structure
     short int bit[GENE_COUNT];
@@ -103,23 +104,45 @@ void sort(chrom popcurrent[POPULATION]){        //sort pop by their prob
     }
 }
 
-void crossover(chrom selected[POPULATION]){ // crossover function takes a pointer to array of chromes
+void crossover(chrom popnext[POPULATION]){ // crossover function takes a pointer to array of chromes
     int random;
     random=rand();
     chrom temp_child;
-    random=((random%(GENE_COUNT-1))+1); //random cross over for first child (child of first selected chrom and the last one)
+    random=((random%(GENE_COUNT-1))+1); //random cross over for first child (child of first popnext chrom and the last one)
     for(int i=0;i<random;i++){
-        temp_child.bit[i] = selected[0].bit[i];
+        temp_child.bit[i] = popnext[0].bit[i];
     }
     for(int i=random;i<GENE_COUNT-1;i++){
-        temp_child.bit[i] = selected[POPULATION-1].bit[i];
+        temp_child.bit[i] = popnext[POPULATION-1].bit[i];
     }
     for(int chrom_counter = 0 ; chrom_counter<POPULATION ; chrom_counter++){
         random=rand();
         random=((random%(GENE_COUNT-1))+1);
         for(int i=random;i<GENE_COUNT;i++){
-            selected[chrom_counter].bit[i] = selected[chrom_counter+1].bit[i];
+            popnext[chrom_counter].bit[i] = popnext[chrom_counter+1].bit[i];
         }    
     }
-    selected[POPULATION-1] = temp_child; //the last selected chrom now becomes the new child
+    popnext[POPULATION-1] = temp_child; //the last popnext chrom now becomes the new child
+
+    long long int total_fitness = 0;
+    for(int i=0;i<POPULATION;i++){
+        popnext[i].fit = fitness(popnext[i]);
+        total_fitness += popnext[i].fit;
+    }
+    for(int i=0;i<POPULATION;i++){
+        popnext[i].prob = (double)popnext[i].fit/total_fitness;
+    }
+
 }                  
+
+void mutation(chrom popnext[POPULATION]){
+    srand((unsigned)time(NULL));
+    int prob = rand()%101;
+    if(prob<=MUTATION_FAC){
+        int chrom = rand()%(POPULATION);
+        int gene = rand()%(GENE_COUNT);
+        popnext[chrom].bit[gene] = (popnext[chrom].bit[gene]==1) ? 0 : 1;
+        popnext[chrom].fit = fitness(popnext[chrom]);
+    }
+
+}
