@@ -23,7 +23,18 @@ void mutation(chrom popnext[POPULATION]);
 void sort(chrom popcurrent[POPULATION]);
 
 int main(){
-
+    chrom popcurrent[POPULATION];                        	 
+    chrom popnext[POPULATION];
+    init_pop(popcurrent);
+    for(int i=0 ; i<ITER ; i++){
+        select(popcurrent,popnext);
+        crossover(popnext);
+        mutation(popnext);
+        for(int j=0;j<POPULATION;j++){
+            popcurrent[j]=popnext[j]; 
+        }
+    } 
+    return 0;
 }
 
 chrom convert_str_2_chrom(char* chrom_str){         //Accepts a string of 1s & 0s to the length of GENE_COUNT.
