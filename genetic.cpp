@@ -4,10 +4,10 @@
 #include<time.h>                //to use the time function
 
 #define GENE_COUNT 10
-#define POPULATION 100
-#define ITER 100
+#define POPULATION 10
+#define ITER 500
 #define STATIC_POP_FILE "population.txt"
-#define MUTATION_FAC 5
+#define MUTATION_FAC 50
 
 typedef struct Chrom{             		// creating the chrom structure
     short int bit[GENE_COUNT];
@@ -21,11 +21,15 @@ void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]);
 void crossover(chrom popnext[POPULATION]);
 void mutation(chrom popnext[POPULATION]);
 void sort(chrom popcurrent[POPULATION]);
+void print_pop(chrom pop[POPULATION]);
 
 int main(){
     chrom popcurrent[POPULATION];                        	 
     chrom popnext[POPULATION];
+    printf("Starting...\n");
     init_pop(popcurrent);
+    printf("Initial Population:\n");
+    print_pop(popcurrent);
     for(int i=0 ; i<ITER ; i++){
         select(popcurrent,popnext);
         crossover(popnext);
@@ -34,7 +38,25 @@ int main(){
             popcurrent[j]=popnext[j]; 
         }
     } 
+    print_pop(popcurrent);
     return 0;
+}
+
+void print_pop(chrom pop[POPULATION]){              //prints a given population(array of chromosomes)
+    long long int total_fitness = 0;
+    for(int i=0;i<POPULATION;i++){
+        for(int j=GENE_COUNT-1; j>=0;j--){
+            printf("%d",pop[i].bit[j]);
+        }
+        printf("   %d   %f\n",pop[i].fit,pop[i].prob);
+        total_fitness += pop[i].fit;
+    }
+    printf("Total Fitness is: %lld\n", total_fitness);
+    printf("\n");
+    for(int i=0;i<20;i++){
+        printf("-");
+    }
+    printf("\n\n");
 }
 
 chrom convert_str_2_chrom(char* chrom_str){         //Accepts a string of 1s & 0s to the length of GENE_COUNT.
@@ -52,18 +74,21 @@ chrom convert_str_2_chrom(char* chrom_str){         //Accepts a string of 1s & 0
 void init_pop(chrom popcurrent[POPULATION]){        //Read Initial population from a static file. STATIC_POP_FILE
     FILE *population;
 
+    printf("Opening input file...\n");
     population = fopen(STATIC_POP_FILE,"rt");
 
     if(population == NULL){
         printf("Error!\nCouldn't open population file.\n");
         exit(EXIT_FAILURE);
     }
+    printf("File opened successfuly.\nReading data...\n");
     for(int i=0;i<POPULATION;i++){
         char chrom_str[GENE_COUNT + 2];
         fscanf(population,"%s",chrom_str);
         chrom_str[GENE_COUNT] = 0;
         popcurrent[i] = convert_str_2_chrom(chrom_str);
     }
+    printf("Data extracted.\n");
     long long int total_fitness = 0;
     for(int i=0;i<POPULATION;i++){
         popcurrent[i].fit = fitness(popcurrent[i]);
@@ -72,6 +97,7 @@ void init_pop(chrom popcurrent[POPULATION]){        //Read Initial population fr
     for(int i=0;i<POPULATION;i++){
         popcurrent[i].prob = (double)popcurrent[i].fit/total_fitness;
     }
+    printf("Initial population ready.\n");
 
 }
 
@@ -90,7 +116,7 @@ void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]){      //pe
     sort(popcurrent);
     srand((unsigned)time(NULL));
     for(int j=0;j<POPULATION;j++){
-        double random = rand()/RAND_MAX;
+        double random = (double)rand()/RAND_MAX;
         double cumulative_prob = 0;
         for(int i=0;i<POPULATION;i++){
             cumulative_prob += popcurrent[i].prob;
@@ -105,11 +131,11 @@ void select(chrom popcurrent[POPULATION], chrom selected[POPULATION]){      //pe
 void sort(chrom popcurrent[POPULATION]){        //sort pop by their prob
     chrom temp;
     for(int i=0 ; i<POPULATION ; i++){
-        for(int j=0; j<POPULATION ; j++){
+        for(int j=0; j<POPULATION-1 ; j++){
             if(popcurrent[j].fit>popcurrent[j+1].fit){
-            temp=popcurrent[j+1];
-            popcurrent[j+1]=popcurrent[j];
-            popcurrent[j]=temp;
+                temp=popcurrent[j+1];
+                popcurrent[j+1]=popcurrent[j];
+                popcurrent[j]=temp;
             }
         }
     }
