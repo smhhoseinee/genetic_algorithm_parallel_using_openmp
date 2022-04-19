@@ -2,12 +2,13 @@
 #include<conio.h>         		//to use the getche function
 #include<stdlib.h>         		//to use the rand function
 #include<time.h>                //to use the time function
+#include<math.h>                //to use the pow function
 
 #define GENE_COUNT 10
-#define POPULATION 10
+#define POPULATION 100
 #define ITER 500
 #define STATIC_POP_FILE "population.txt"
-#define MUTATION_FAC 50
+#define MUTATION_FAC 5
 
 typedef struct Chrom{             		// creating the chrom structure
     short int bit[GENE_COUNT];
@@ -44,14 +45,25 @@ int main(){
 
 void print_pop(chrom pop[POPULATION]){              //prints a given population(array of chromosomes)
     long long int total_fitness = 0;
+    int max_fit = 0;
+    int min_fit = 101;
     for(int i=0;i<POPULATION;i++){
         for(int j=GENE_COUNT-1; j>=0;j--){
             printf("%d",pop[i].bit[j]);
         }
         printf("   %d   %f\n",pop[i].fit,pop[i].prob);
         total_fitness += pop[i].fit;
+        if(pop[i].fit>max_fit){
+            max_fit = pop[i].fit;
+        }
+        if(pop[i].fit<min_fit){
+            min_fit = pop[i].fit;
+        }
     }
     printf("Total Fitness is: %lld\n", total_fitness);
+    printf("Average Fitness is: %f\n", total_fitness/(double)POPULATION);
+    printf("Maximum Fitness is: %d\n", max_fit);
+    printf("Minimum Fitness is: %d\n", min_fit);
     printf("\n");
     for(int i=0;i<20;i++){
         printf("-");
@@ -105,7 +117,7 @@ int fitness(chrom chrom){
     int bit_number = 0;
     int sum = 0;
     while(bit_number < GENE_COUNT){
-        sum += (chrom.bit[bit_number]*(2^bit_number));
+        sum += (chrom.bit[bit_number]*((int)pow(2,bit_number)));
         bit_number++;
     }
     sum = sum%101;
