@@ -6,8 +6,8 @@
 #include <omp.h>    //to use the openmp functionalities
 
 #define GENE_COUNT 10
-#define POPULATION 100
-#define ITER 1
+#define POPULATION 20000
+#define ITER 500
 #define STATIC_POP_FILE "population.txt"
 #define MUTATION_FAC 5
 
@@ -39,7 +39,7 @@ int main()
     print_pop(popcurrent);
 
     elapsed_time = clock();
-    // #pragma omp parallel for collapse(2)
+    #pragma omp parallel for 
     for (int i = 0; i < ITER; i++)
     {
         select(popcurrent, popnext);
