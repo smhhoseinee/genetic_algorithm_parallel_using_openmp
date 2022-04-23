@@ -6,13 +6,11 @@
 #include <omp.h>    //to use the openmp functionalities
 
 #define GENE_COUNT 10
-#define POPULATION 100
+#define POPULATION 10000
 #define ITER 500
 #define STATIC_POP_FILE "population.txt"
 #define MUTATION_FAC 5
-#define CLOCK_PER_SEC 60
 
-clock_t elapsed_time;
 typedef struct Chrom
 { // creating the chrom structure
     short int bit[GENE_COUNT];
@@ -32,11 +30,13 @@ int main()
 {
     chrom popcurrent[POPULATION];
     chrom popnext[POPULATION];
+    clock_t elapsed_time;
+
     printf("Starting...\n");
     init_pop(popcurrent);
     printf("Initial Population:\n");
     print_pop(popcurrent);
-    
+
     elapsed_time = clock();
     // #pragma omp parallel for collapse(2)
     for (int i = 0; i < ITER; i++)
@@ -51,7 +51,8 @@ int main()
     }
     elapsed_time = clock() - elapsed_time;
     print_pop(popcurrent);
-    printf("execution time = %f seconds",((double)elapsed_time)/CLOCK_PER_SEC);
+
+    printf("Population %d and iteration %d \nElapsed time is: %f(s)\n\n",POPULATION,ITER,(((double)elapsed_time)/CLOCKS_PER_SEC));
     return 0;
 }
 
@@ -93,7 +94,7 @@ void print_pop(chrom pop[POPULATION])
 chrom convert_str_2_chrom(char *chrom_str)
 {                 // Accepts a string of 1s & 0s to the length of GENE_COUNT.
     chrom chromo; // Will return the corresponding chromosome.
-                  // #pragma omp parallel for
+#pragma omp parallel for
     for (int i = 0; i < GENE_COUNT; i++)
     {
         if (chrom_str[i] != '0' && chrom_str[i] != '1')
