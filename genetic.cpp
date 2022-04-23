@@ -10,7 +10,9 @@
 #define ITER 500
 #define STATIC_POP_FILE "population.txt"
 #define MUTATION_FAC 5
+#define CLOCK_PER_SEC 60
 
+clock_t elapsed_time;
 typedef struct Chrom
 { // creating the chrom structure
     short int bit[GENE_COUNT];
@@ -34,6 +36,8 @@ int main()
     init_pop(popcurrent);
     printf("Initial Population:\n");
     print_pop(popcurrent);
+    
+    elapsed_time = clock();
     // #pragma omp parallel for collapse(2)
     for (int i = 0; i < ITER; i++)
     {
@@ -45,7 +49,9 @@ int main()
             popcurrent[j] = popnext[j];
         }
     }
+    elapsed_time = clock() - elapsed_time;
     print_pop(popcurrent);
+    printf("execution time = %f seconds",((double)elapsed_time)/CLOCK_PER_SEC);
     return 0;
 }
 
