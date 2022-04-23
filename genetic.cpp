@@ -6,8 +6,8 @@
 #include <omp.h>    //to use the openmp functionalities
 
 #define GENE_COUNT 10
-#define POPULATION 10000
-#define ITER 500
+#define POPULATION 100
+#define ITER 1
 #define STATIC_POP_FILE "population.txt"
 #define MUTATION_FAC 5
 
@@ -28,6 +28,7 @@ void print_pop(chrom pop[POPULATION]);
 
 int main()
 {
+    omp_set_dynamic(1);
     chrom popcurrent[POPULATION];
     chrom popnext[POPULATION];
     clock_t elapsed_time;
@@ -44,6 +45,7 @@ int main()
         select(popcurrent, popnext);
         crossover(popnext);
         mutation(popnext);
+        // #pragma omp parallel for
         for (int j = 0; j < POPULATION; j++)
         {
             popcurrent[j] = popnext[j];
@@ -53,6 +55,9 @@ int main()
     print_pop(popcurrent);
 
     printf("Population %d and iteration %d \nElapsed time is: %f(s)\n\n",POPULATION,ITER,(((double)elapsed_time)/CLOCKS_PER_SEC));
+    printf("number of threads : %i\n",omp_get_max_threads());
+    printf("is dynamic : %i\n",omp_get_dynamic());
+    
     return 0;
 }
 
