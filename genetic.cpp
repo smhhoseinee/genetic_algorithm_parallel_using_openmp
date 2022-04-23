@@ -6,7 +6,7 @@
 
 #define GENE_COUNT 10
 #define POPULATION 100
-#define ITER 500
+#define ITER 100
 #define STATIC_POP_FILE "population.txt"
 #define MUTATION_FAC 5
 
@@ -29,10 +29,12 @@ int main()
 {
     chrom popcurrent[POPULATION];
     chrom popnext[POPULATION];
-    printf("Starting...\n");
+    clock_t elapsed_time;
+    printf("Starting...\n\n");
     init_pop(popcurrent);
-    printf("Initial Population:\n");
+    // printf("Initial Population:\n");
     print_pop(popcurrent);
+    elapsed_time = clock();
     for (int i = 0; i < ITER; i++)
     {
         select(popcurrent, popnext);
@@ -43,7 +45,10 @@ int main()
             popcurrent[j] = popnext[j];
         }
     }
+    elapsed_time = clock() - elapsed_time;
     print_pop(popcurrent);
+
+    printf("Population %d and iteration %d \nElapsed time is: %f(s)\n\n",POPULATION,ITER,(((double)elapsed_time)/CLOCKS_PER_SEC));
     return 0;
 }
 
