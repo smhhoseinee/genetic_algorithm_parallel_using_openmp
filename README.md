@@ -11,6 +11,7 @@ g++ .\genetic_no_parallelism.cpp -o .\unparalleled.exe -fopenmp
 ```
 ---
 - Note that these results are based on ``population.txt ``which is a sample population (you can generate your own population using the ``rnad_population_generator.py`` python script )
+- you can find detailed report about this implementation on  ``report.pdf`` file
 
 Time/Population execution results: 
 
