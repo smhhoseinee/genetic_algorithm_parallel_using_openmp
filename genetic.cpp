@@ -6,7 +6,7 @@
 #include <omp.h>    //to use the openmp functionalities
 
 #define GENE_COUNT 10
-#define POPULATION 20000
+#define POPULATION 1000
 #define ITER 500
 #define STATIC_POP_FILE "population.txt"
 #define MUTATION_FAC 5
@@ -28,6 +28,7 @@ void print_pop(chrom pop[POPULATION]);
 
 int main()
 {
+    omp_set_num_threads(64);
     omp_set_dynamic(1);
     chrom popcurrent[POPULATION];
     chrom popnext[POPULATION];
@@ -54,8 +55,11 @@ int main()
     elapsed_time = clock() - elapsed_time;
     print_pop(popcurrent);
 
-    printf("Population %d and iteration %d \nElapsed time is: %f(s)\n\n",POPULATION,ITER,(((double)elapsed_time)/CLOCKS_PER_SEC));
+    printf("Population %d and iteration %d \n\n",POPULATION,ITER,(((double)elapsed_time)/CLOCKS_PER_SEC));
+
     printf("number of threads : %i\n",omp_get_max_threads());
+    printf("Elapsed time is: %f(s)\n",(((double)elapsed_time)/CLOCKS_PER_SEC));
+    // printf("omp_get_num_threads() : %i\n",omp_get_num_threads());
     printf("is dynamic : %i\n",omp_get_dynamic());
     
     return 0;
