@@ -38,18 +38,18 @@ The most computationally intensive parts are Selection and Crossover, where para
 The algorithm requires setting several key parameters like Population size, Max Iterations, and Mutation Probability which are hardcoded. Different parameter configurations lead to different performance and accuracy results.
 
 ## Main Algorithm Steps
-### Selection: Individuals are selected probabilistically based on fitness to form the next generation population. Higher fitness means higher selection chance.
+Selection: Individuals are selected probabilistically based on fitness to form the next generation population. Higher fitness means higher selection chance.
 
-### Crossover: Pairs of selected individuals reproduce to create offspring for the next generation. Offspring are expected to have higher fitness but randomness can lead to the opposite.
+Crossover: Pairs of selected individuals reproduce to create offspring for the next generation. Offspring are expected to have higher fitness but randomness can lead to the opposite.
 
-### Mutation: Random changes are introduced to an individual's genes with a small probability. This step has O(1) time complexity and does not impact runtime.
+Mutation: Random changes are introduced to an individual's genes with a small probability. This step has O(1) time complexity and does not impact runtime.
 
 ## Other Sections
-### Initial population: Read from a static file instead of random generation for consistent benchmarking.
+Initial population: Read from a static file instead of random generation for consistent benchmarking.
 
-### Sorting: Simple O(n^2) sort to order the population by fitness.
+Sorting: Simple O(n^2) sort to order the population by fitness.
 
-### Fitness evaluation: Compute fitness value for each individual.
+Fitness evaluation: Compute fitness value for each individual.
 
 ## Analysis
 Comparisons are made between serial and parallel execution with different population sizes and max iterations. Parallelization provides significant speedups for large populations and iterations.
