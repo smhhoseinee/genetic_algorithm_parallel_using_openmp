@@ -56,6 +56,88 @@ Comparisons are made between serial and parallel execution with different popula
 
 Thread counts are analyzed in static and dynamic modes. After 4 threads, dynamic outperforms static as thread counts increase.
 
+The provided code is an implementation of a genetic algorithm in C++, which aims to find an optimal solution to a problem by mimicking the process of natural selection and evolution. The algorithm starts with an initial population of chromosomes, which are potential solutions to the problem. It then iteratively performs selection, crossover, and mutation operations on the population to generate the next generation of chromosomes.
+
+The code uses OpenMP, a library for shared-memory parallel programming, to parallelize certain parts of the algorithm and improve its performance. OpenMP allows the code to be executed in parallel by distributing the workload among multiple threads.
+
+Here is an explanation of the parallelism in the code:
+
+Specifying the number of threads: The following line sets the number of threads to be used by OpenMP to 64.
+omp_set_num_threads(64);
+This means that the subsequent parallel regions will be executed using 64 threads.
+Parallelizing the main loop: The main algorithmic loop, which represents the iterations of the genetic algorithm, is parallelized using OpenMP's parallel for directive. This allows multiple iterations of the loop to be executed concurrently by different threads.
+#pragma omp parallel for 
+for (int i = 0; i < ITER; i++)
+{
+    // ...
+}
+Parallelizing the printing of the population: The print_pop function, which prints the population, is also parallelized using OpenMP's parallel for directive. This allows multiple threads to print different chromosomes of the population simultaneously.
+void print_pop(chrom pop[POPULATION])
+{ 
+   // ...
+   #pragma omp parallel for
+   for (int i = 0; i < POPULATION; i++)
+   {
+       // ...
+   }
+   // ...
+}
+Parallelizing the conversion of chromosome string to chromosome structure: The convert_str_2_chrom function, which converts a string representation of a chromosome to a chromosome structure, is parallelized using OpenMP's parallel for directive. This allows multiple threads to perform the conversion for different bits of the chromosome simultaneously.
+chrom convert_str_2_chrom(char *chrom_str)
+{                 
+   chrom chromo; 
+   #pragma omp parallel for
+   for (int i = 0; i < GENE_COUNT; i++)
+   {
+       // ...
+   }
+   return chromo;
+}
+Parallelizing the calculation of fitness values: The calculation of fitness values for each chromosome in the population is parallelized using OpenMP's parallel for directive. This allows multiple threads to calculate fitness values for different chromosomes concurrently.
+#pragma omp parallel for
+for (int i = 0; i < POPULATION; i++)
+{
+    popcurrent[i].fit = fitness(popcurrent[i]);
+    total_fitness += popcurrent[i].fit;
+}
+Parallelizing the selection process: The select function, which performs the selection operation on the current population, is parallelized using OpenMP's parallel for directive. This allows multiple threads to select different chromosomes from the population concurrently.
+void select(chrom popcurrent[POPULATION], chrom selected[POPULATION])
+{ 
+   // ...
+   #pragma omp parallel for
+   for (int j = 0; j < POPULATION; j++)
+   {
+       // ...
+   }
+   // ...
+}
+Parallelizing the sorting of the population: The sort function, which sorts the population based on fitness values, is parallelized using OpenMP's parallel for directive. This allows multiple threads to sort different parts of the population concurrently.
+void sort(chrom popcurrent[POPULATION])
+{ 
+   // ...
+   #pragma omp parallel for collapse(2)
+   for (int i = 0; i < POPULATION; i++)
+   {
+       for (int j = 0; j < POPULATION - 1; j++)
+       {
+           // ...
+       }
+   }
+   // ...
+}
+Parallelizing the mutation operation: The mutation function, which introduces random mutations in the population, is parallelized using OpenMP's parallel for directive. This allows multiple threads to mutate different chromosomes concurrently.
+void mutation(chrom popnext[POPULATION])
+{
+   // ...
+   #pragma omp parallel for
+   for (int chrom_counter = 0; chrom_counter < POPULATION; chrom_counter++)
+   {
+       // ...
+   }
+}
+Overall, the parallelism in the code leverages OpenMP to divide the workload among multiple threads, allowing for concurrent execution of different parts of the genetic algorithm. This can potentially improve the performance of the algorithm by utilizing the available computational resources more efficiently.
+
+
 ## Challenges and Key Points
 The sequential nature of genetic algorithm steps posed challenges for parallelization. Each step was parallelized separately.
 
